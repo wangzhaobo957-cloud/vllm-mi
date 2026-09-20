@@ -10,11 +10,13 @@ namespace mini_infer {
 // 返回 logits 中数值最大位置对应的 token ID。
 int GreedySampler::Sample(const Tensor& logits) const
 {
-    if (logits.Rank() != 1) {
+    if (logits.Rank() != 1)
+    {
         throw std::invalid_argument("GreedySampler expects rank-1 logits");
     }
     if (logits.Size() >
-        static_cast<std::size_t>(std::numeric_limits<int>::max())) {
+        static_cast<std::size_t>(std::numeric_limits<int>::max()))
+    {
         throw std::overflow_error("vocabulary size exceeds token ID range");
     }
 

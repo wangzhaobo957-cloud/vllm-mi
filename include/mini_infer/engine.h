@@ -13,16 +13,17 @@
 
 namespace mini_infer {
 
-struct GenerationResult {
+struct GenerationResult
+{
     std::vector<int> token_ids;
     std::string text;
 };
 
-class InferenceEngine {
+class InferenceEngine
+{
 public:
     // 绑定推理所需组件并按模型配置创建 KV 缓存。
-    InferenceEngine(const Tokenizer& tokenizer,
-                    const DecoderModel& model,
+    InferenceEngine(const Tokenizer& tokenizer, const DecoderModel& model,
                     const Sampler& sampler);
 
     // 对输入执行 prefill 和逐 token decode，并返回新增内容。

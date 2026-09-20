@@ -1,5 +1,5 @@
-# 本文件定义 mini-infer 项目的统一 C++ 代码风格：
-# 函数定义的左花括号另起一行，类、命名空间和控制语句的左花括号保持在同一行。
+# 本文件定义 mini-infer 项目的统一 C++ 代码风格（Allman）：
+# 类、函数、控制语句（if/for/while/else/catch）的左花括号一律另起一行。
 Language: Cpp
 BasedOnStyle: LLVM
 
@@ -11,19 +11,19 @@ ColumnLimit: 80
 AccessModifierOffset: -4
 NamespaceIndentation: None
 
-# 花括号换行规则：仅函数定义换行，其余保持贴合
+# 花括号换行规则：Allman —— 类、函数、控制语句全部换行
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterClass: false
-  AfterStruct: false
-  AfterEnum: false
-  AfterUnion: false
+  AfterClass: true
+  AfterStruct: true
+  AfterEnum: true
+  AfterUnion: true
   AfterNamespace: false
   AfterFunction: true
-  AfterControlStatement: Never
-  BeforeElse: false
-  BeforeCatch: false
-  BeforeWhile: false
+  AfterControlStatement: Always
+  BeforeElse: true
+  BeforeCatch: true
+  BeforeWhile: true
   SplitEmptyFunction: true
   SplitEmptyRecord: false
 
@@ -37,11 +37,11 @@ AllowShortLoopsOnASingleLine: false
 PointerAlignment: Left
 DerivePointerAlignment: false
 
-# 函数参数换行时每个参数独占一行，且不把返回类型单独提到一行
-BinPackParameters: false
-BinPackArguments: false
-AllowAllParametersOfDeclarationOnNextLine: false
-AllowAllArgumentsOnNextLine: false
+# 参数/实参尽量排在一行，放得下就不拆分；超出列宽才换行
+BinPackParameters: true
+BinPackArguments: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllArgumentsOnNextLine: true
 AlwaysBreakAfterReturnType: None
 PenaltyReturnTypeOnItsOwnLine: 1000
 

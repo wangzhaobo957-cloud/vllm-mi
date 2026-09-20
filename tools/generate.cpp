@@ -13,14 +13,16 @@
 
 namespace {
 
-class ByteTokenizer final : public mini_infer::Tokenizer {
+class ByteTokenizer final : public mini_infer::Tokenizer
+{
 public:
     // 将每个输入字节直接映射为一个 token ID。
     [[nodiscard]] std::vector<int> Encode(std::string_view text) const override
     {
         std::vector<int> tokens;
         tokens.reserve(text.size());
-        for (const char character : text) {
+        for (const char character : text)
+        {
             tokens.push_back(static_cast<unsigned char>(character));
         }
         return tokens;
@@ -29,14 +31,16 @@ public:
     // 将字节范围内的 token ID 还原为单字符字符串。
     [[nodiscard]] std::string DecodeToken(int token_id) const override
     {
-        if (token_id < 0 || token_id > 255) {
+        if (token_id < 0 || token_id > 255)
+        {
             throw std::out_of_range("byte token is outside [0, 255]");
         }
         return std::string(1, static_cast<char>(token_id));
     }
 };
 
-class ToyModel final : public mini_infer::DecoderModel {
+class ToyModel final : public mini_infer::DecoderModel
+{
 public:
     // 创建仅用于验证自回归流程的确定性玩具模型。
     ToyModel() : config_(CreateConfig())
@@ -52,8 +56,7 @@ public:
 
     // 令字母 token 预测其后继字母，并写入一项可观察的 KV 数据。
     [[nodiscard]] mini_infer::Tensor Forward(
-        int token_id,
-        std::size_t position,
+        int token_id, std::size_t position,
         mini_infer::KVCache& cache) const override
     {
         const std::array<float, 1> key = {
@@ -65,9 +68,12 @@ public:
         cache.Set(0, position, key, value);
 
         int next_token = 'a';
-        if (token_id >= 'a' && token_id < 'z') {
+        if (token_id >= 'a' && token_id < 'z')
+        {
             next_token = token_id + 1;
-        } else if (token_id == 'z') {
+        }
+        else if (token_id == 'z')
+        {
             next_token = 'a';
         }
 
@@ -102,7 +108,8 @@ private:
     const char* begin = text.data();
     const char* end = begin + text.size();
     const auto [position, error] = std::from_chars(begin, end, value);
-    if (error != std::errc{} || position != end) {
+    if (error != std::errc{} || position != end)
+    {
         throw std::invalid_argument("max_new_tokens must be an integer");
     }
     return value;
@@ -113,22 +120,24 @@ private:
 // 解析参数并运行玩具模型的自回归生成流程。
 int main(int argc, char** argv)
 {
-    try {
+    try
+    {
         const std::string_view prompt = argc > 1 ? argv[1] : "a";
         const std::size_t max_new_tokens = argc > 2 ? ParseCount(argv[2]) : 8;
 
         ByteTokenizer tokenizer;
         ToyModel model;
         mini_infer::GreedySampler sampler;  // 采样器
-        mini_infer::InferenceEngine engine(tokenizer,
-                                           model,
+        mini_infer::InferenceEngine engine(tokenizer, model,
                                            sampler);  // 推理引擎
 
         const mini_infer::GenerationResult result =
             engine.Generate(prompt, max_new_tokens);
         std::cout << result.text << '\n';
         return 0;
-    } catch (const std::exception& error) {
+    }
+    catch (const std::exception& error)
+    {
         std::cerr << "error: " << error.what() << '\n';
         return 1;
     }

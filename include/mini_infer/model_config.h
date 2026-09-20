@@ -5,7 +5,8 @@
 
 namespace mini_infer {
 
-struct ModelConfig {
+struct ModelConfig
+{
     std::size_t vocab_size = 0;
     std::size_t hidden_size = 0;
     std::size_t intermediate_size = 0;

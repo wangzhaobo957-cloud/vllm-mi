@@ -7,7 +7,8 @@
 
 namespace mini_infer {
 
-class Tensor {
+class Tensor
+{
 public:
     // 创建指定形状并使用同一个数值初始化的连续张量。
     explicit Tensor(std::vector<std::size_t> shape, float initial_value = 0.0F);

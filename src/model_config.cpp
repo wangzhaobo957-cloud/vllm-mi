@@ -10,19 +10,23 @@ void ModelConfig::Validate() const
 {
     if (vocab_size == 0 || hidden_size == 0 || intermediate_size == 0 ||
         num_layers == 0 || num_attention_heads == 0 || num_kv_heads == 0 ||
-        max_sequence_length == 0) {
+        max_sequence_length == 0)
+    {
         throw std::invalid_argument(
             "model dimensions must be greater than zero");
     }
-    if (hidden_size % num_attention_heads != 0) {
+    if (hidden_size % num_attention_heads != 0)
+    {
         throw std::invalid_argument(
             "hidden_size must be divisible by num_attention_heads");
     }
-    if (num_attention_heads % num_kv_heads != 0) {
+    if (num_attention_heads % num_kv_heads != 0)
+    {
         throw std::invalid_argument(
             "num_attention_heads must be divisible by num_kv_heads");
     }
-    if (rope_theta <= 0.0F || rms_norm_epsilon <= 0.0F) {
+    if (rope_theta <= 0.0F || rms_norm_epsilon <= 0.0F)
+    {
         throw std::invalid_argument(
             "rope_theta and rms_norm_epsilon must be greater than zero");
     }

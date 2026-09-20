@@ -7,7 +7,8 @@
 
 namespace mini_infer {
 
-class Tokenizer {
+class Tokenizer
+{
 public:
     // 通过虚析构函数支持从接口安全释放具体分词器。
     virtual ~Tokenizer() = default;

@@ -9,7 +9,8 @@
 
 namespace mini_infer {
 
-class KVCache {
+class KVCache
+{
 public:
     // 根据模型配置预分配全部 Key 和 Value 存储空间。
     explicit KVCache(const ModelConfig& config);
@@ -18,10 +19,8 @@ public:
     void Clear() noexcept;
 
     // 写入指定层和 token 位置对应的 Key 与 Value。
-    void Set(std::size_t layer,
-             std::size_t position,
-             std::span<const float> key,
-             std::span<const float> value);
+    void Set(std::size_t layer, std::size_t position,
+             std::span<const float> key, std::span<const float> value);
 
     // 返回指定层和 token 位置的只读 Key 视图。
     [[nodiscard]] std::span<const float> Key(std::size_t layer,

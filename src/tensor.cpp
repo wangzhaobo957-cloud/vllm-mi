@@ -60,13 +60,15 @@ const float& Tensor::operator[](std::size_t index) const
 std::size_t Tensor::ComputeElementCount(const std::vector<std::size_t>& shape)
 {
     std::size_t element_count = 1;
-    for (const std::size_t dimension : shape) {
-        if (dimension == 0) {
+    for (const std::size_t dimension : shape)
+    {
+        if (dimension == 0)
+        {
             throw std::invalid_argument(
                 "tensor dimensions must be greater than zero");
         }
-        if (element_count >
-            std::numeric_limits<std::size_t>::max() / dimension) {
+        if (element_count > std::numeric_limits<std::size_t>::max() / dimension)
+        {
             throw std::overflow_error("tensor element count overflow");
         }
         element_count *= dimension;

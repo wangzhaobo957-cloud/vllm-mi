@@ -13,11 +13,13 @@ KVCache::KVCache(const ModelConfig& config)
       max_sequence_length_(config.max_sequence_length), width_(config.KvWidth())
 {
     if (num_layers_ >
-        std::numeric_limits<std::size_t>::max() / max_sequence_length_) {
+        std::numeric_limits<std::size_t>::max() / max_sequence_length_)
+    {
         throw std::overflow_error("KV cache dimensions overflow");
     }
     const std::size_t layer_positions = num_layers_ * max_sequence_length_;
-    if (layer_positions > std::numeric_limits<std::size_t>::max() / width_) {
+    if (layer_positions > std::numeric_limits<std::size_t>::max() / width_)
+    {
         throw std::overflow_error("KV cache dimensions overflow");
     }
 
@@ -35,12 +37,11 @@ void KVCache::Clear() noexcept
 }
 
 // 写入指定层和 token 位置对应的 Key 与 Value。
-void KVCache::Set(std::size_t layer,
-                  std::size_t position,
-                  std::span<const float> key,
-                  std::span<const float> value)
+void KVCache::Set(std::size_t layer, std::size_t position,
+                  std::span<const float> key, std::span<const float> value)
 {
-    if (key.size() != width_ || value.size() != width_) {
+    if (key.size() != width_ || value.size() != width_)
+    {
         throw std::invalid_argument(
             "KV vector width does not match model config");
     }
@@ -82,10 +83,12 @@ std::size_t KVCache::Width() const noexcept
 // 检查层号和位置并返回对应连续内存的起始下标。
 std::size_t KVCache::Offset(std::size_t layer, std::size_t position) const
 {
-    if (layer >= num_layers_) {
+    if (layer >= num_layers_)
+    {
         throw std::out_of_range("KV cache layer is out of range");
     }
-    if (position >= max_sequence_length_) {
+    if (position >= max_sequence_length_)
+    {
         throw std::out_of_range("KV cache position is out of range");
     }
     return (layer * max_sequence_length_ + position) * width_;

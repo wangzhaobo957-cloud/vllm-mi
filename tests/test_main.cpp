@@ -20,16 +20,15 @@ int failures = 0;
 // 记录布尔条件不满足时的测试失败信息。
 void Expect(bool condition, std::string_view message)
 {
-    if (!condition) {
+    if (!condition)
+    {
         ++failures;
         std::cerr << "FAIL: " << message << '\n';
     }
 }
 
 // 在指定容差内比较两个浮点数。
-void ExpectNear(float actual,
-                float expected,
-                float tolerance,
+void ExpectNear(float actual, float expected, float tolerance,
                 std::string_view message)
 {
     Expect(std::fabs(actual - expected) <= tolerance, message);
@@ -73,10 +72,9 @@ void TestMatMul()
     const std::array<float, 4> expected = {58, 64, 139, 154};
     Expect(output.Shape() == std::vector<std::size_t>({2, 2}),
            "MatMul output shape should be [2, 2]");
-    for (std::size_t index = 0; index < expected.size(); ++index) {
-        ExpectNear(output[index],
-                   expected[index],
-                   1.0e-6F,
+    for (std::size_t index = 0; index < expected.size(); ++index)
+    {
+        ExpectNear(output[index], expected[index], 1.0e-6F,
                    "MatMul output value should match");
     }
 }
@@ -91,13 +89,9 @@ void TestRmsNorm()
 
     const mini_infer::ReferenceCpuBackend backend;
     const mini_infer::Tensor output = backend.RmsNorm(input, weight, 1.0e-6F);
-    ExpectNear(output[0],
-               0.848528F,
-               1.0e-5F,
+    ExpectNear(output[0], 0.848528F, 1.0e-5F,
                "RmsNorm first value should match");
-    ExpectNear(output[1],
-               1.131371F,
-               1.0e-5F,
+    ExpectNear(output[1], 1.131371F, 1.0e-5F,
                "RmsNorm second value should match");
 }
 
@@ -138,18 +132,22 @@ void TestGreedySampler()
 // 依次运行基础测试并通过进程退出码报告结果。
 int main()
 {
-    try {
+    try
+    {
         TestModelConfig();
         TestMatMul();
         TestRmsNorm();
         TestKvCache();
         TestGreedySampler();
-    } catch (const std::exception& error) {
+    }
+    catch (const std::exception& error)
+    {
         ++failures;
         std::cerr << "UNEXPECTED EXCEPTION: " << error.what() << '\n';
     }
 
-    if (failures == 0) {
+    if (failures == 0)
+    {
         std::cout << "all tests passed\n";
     }
     return failures == 0 ? 0 : 1;

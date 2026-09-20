@@ -9,7 +9,8 @@
 
 namespace mini_infer {
 
-class DecoderModel {
+class DecoderModel
+{
 public:
     // 通过虚析构函数支持从接口安全释放具体模型。
     virtual ~DecoderModel() = default;
@@ -18,8 +19,7 @@ public:
     [[nodiscard]] virtual const ModelConfig& Config() const noexcept = 0;
 
     // 输入一个 token 并返回预测下一个 token 的一维 logits。
-    [[nodiscard]] virtual Tensor Forward(int token_id,
-                                         std::size_t position,
+    [[nodiscard]] virtual Tensor Forward(int token_id, std::size_t position,
                                          KVCache& cache) const = 0;
 };
 

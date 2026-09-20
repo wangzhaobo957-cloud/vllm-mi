@@ -5,7 +5,8 @@
 
 namespace mini_infer {
 
-class Sampler {
+class Sampler
+{
 public:
     // 通过虚析构函数支持从接口安全释放具体采样器。
     virtual ~Sampler() = default;
@@ -14,7 +15,8 @@ public:
     [[nodiscard]] virtual int Sample(const Tensor& logits) const = 0;
 };
 
-class GreedySampler final : public Sampler {
+class GreedySampler final : public Sampler
+{
 public:
     // 返回 logits 中数值最大位置对应的 token ID。
     [[nodiscard]] int Sample(const Tensor& logits) const override;
