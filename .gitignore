@@ -1,0 +1,9 @@
+# 本文件忽略本地构建产物、编辑器配置和系统临时文件。
+/build/
+/cmake-build-*/
+/out/
+compile_commands.json
+.DS_Store
+.idea/
+.vscode/
+.cache/
