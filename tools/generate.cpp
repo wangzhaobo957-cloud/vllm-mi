@@ -10,14 +10,16 @@
 #include <vector>
 
 #include "mini_infer/engine.h"
+#include "mini_infer/sampler.h"
 
 namespace {
 
-class ByteTokenizer final : public mini_infer::Tokenizer
+// 将每个字节视为一个 token 的最小分词器，仅用于演示生成主循环。
+class ByteTokenizer
 {
 public:
     // 将每个输入字节直接映射为一个 token ID。
-    [[nodiscard]] std::vector<int> Encode(std::string_view text) const override
+    [[nodiscard]] std::vector<int> Encode(std::string_view text) const
     {
         std::vector<int> tokens;
         tokens.reserve(text.size());
@@ -29,7 +31,7 @@ public:
     }
 
     // 将字节范围内的 token ID 还原为单字符字符串。
-    [[nodiscard]] std::string DecodeToken(int token_id) const override
+    [[nodiscard]] std::string DecodeToken(int token_id) const
     {
         if (token_id < 0 || token_id > 255)
         {
@@ -39,7 +41,8 @@ public:
     }
 };
 
-class ToyModel final : public mini_infer::DecoderModel
+// 仅用于验证自回归流程的确定性玩具模型。
+class ToyModel
 {
 public:
     // 创建仅用于验证自回归流程的确定性玩具模型。
@@ -48,16 +51,15 @@ public:
     }
 
     // 返回玩具模型的固定结构配置。
-    [[nodiscard]] const mini_infer::ModelConfig& Config()
-        const noexcept override
+    [[nodiscard]] const mini_infer::ModelConfig& Config() const noexcept
     {
         return config_;
     }
 
     // 令字母 token 预测其后继字母，并写入一项可观察的 KV 数据。
-    [[nodiscard]] mini_infer::Tensor Forward(
-        int token_id, std::size_t position,
-        mini_infer::KVCache& cache) const override
+    [[nodiscard]] mini_infer::Tensor Forward(int token_id,
+                                             std::size_t position,
+                                             mini_infer::KVCache& cache) const
     {
         const std::array<float, 1> key = {
             static_cast<float>(token_id),
@@ -128,8 +130,9 @@ int main(int argc, char** argv)
         ByteTokenizer tokenizer;
         ToyModel model;
         mini_infer::GreedySampler sampler;  // 采样器
-        mini_infer::InferenceEngine engine(tokenizer, model,
-                                           sampler);  // 推理引擎
+        mini_infer::InferenceEngine<ByteTokenizer, ToyModel,
+                                    mini_infer::GreedySampler>
+            engine(tokenizer, model, sampler);  // 推理引擎
 
         const mini_infer::GenerationResult result =
             engine.Generate(prompt, max_new_tokens);

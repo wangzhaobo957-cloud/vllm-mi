@@ -13,7 +13,6 @@ option(MINI_INFER_BUILD_TESTS "Build tests" ON)
 
 add_library(
     mini_infer
-    src/engine.cpp
     src/kv_cache.cpp
     src/model_config.cpp
     src/reference_cpu_backend.cpp
