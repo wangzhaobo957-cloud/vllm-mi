@@ -11,41 +11,40 @@ project(
 option(MINI_INFER_BUILD_TOOLS "Build command-line tools" ON)
 option(MINI_INFER_BUILD_TESTS "Build tests" ON)
 
-add_library(
-    mini_infer
-    src/kv_cache.cpp
-    src/model_config.cpp
-    src/reference_cpu_backend.cpp
-    src/sampler.cpp
-    src/tensor.cpp
-)
+# 库改为纯头文件（header-only）实现，因此使用 INTERFACE 目标，无需编译单独的源文件。
+add_library(mini_infer INTERFACE)
 
 add_library(mini_infer::mini_infer ALIAS mini_infer)
 
 target_include_directories(
     mini_infer
-    PUBLIC
+    INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<INSTALL_INTERFACE:include>"
 )
 
-target_compile_features(mini_infer PUBLIC cxx_std_20)
+target_compile_features(mini_infer INTERFACE cxx_std_20)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    target_compile_options(mini_infer PRIVATE -Wall -Wextra -Wpedantic)
-elseif(MSVC)
-    target_compile_options(mini_infer PRIVATE /W4)
-endif()
+# 由于库已是 header-only，编译警告转由真正编译代码的可执行目标承担。
+function(mini_infer_enable_warnings target)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+    elseif(MSVC)
+        target_compile_options(${target} PRIVATE /W4)
+    endif()
+endfunction()
 
 if(MINI_INFER_BUILD_TOOLS)
     add_executable(mini-infer-generate tools/generate.cpp)
     target_link_libraries(mini-infer-generate PRIVATE mini_infer::mini_infer)
+    mini_infer_enable_warnings(mini-infer-generate)
 endif()
 
 if(MINI_INFER_BUILD_TESTS)
     include(CTest)
     add_executable(mini-infer-tests tests/test_main.cpp)
     target_link_libraries(mini-infer-tests PRIVATE mini_infer::mini_infer)
+    mini_infer_enable_warnings(mini-infer-tests)
     add_test(NAME mini-infer-tests COMMAND mini-infer-tests)
 
     if(MINI_INFER_BUILD_TOOLS)
