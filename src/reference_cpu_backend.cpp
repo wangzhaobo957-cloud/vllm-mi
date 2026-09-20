@@ -8,9 +8,9 @@
 namespace mini_infer {
 
 // 使用直接三重循环计算二维矩阵乘法。
-Tensor ReferenceCpuBackend::MatMul(
-    const Tensor& left,
-    const Tensor& right) const {
+Tensor ReferenceCpuBackend::MatMul(const Tensor& left,
+                                   const Tensor& right) const
+{
     if (left.Rank() != 2 || right.Rank() != 2) {
         throw std::invalid_argument("MatMul expects two rank-2 tensors");
     }
@@ -28,8 +28,8 @@ Tensor ReferenceCpuBackend::MatMul(
         for (std::size_t column = 0; column < columns; ++column) {
             float sum = 0.0F;
             for (std::size_t index = 0; index < inner; ++index) {
-                sum += left[row * inner + index] *
-                       right[index * columns + column];
+                sum +=
+                    left[row * inner + index] * right[index * columns + column];
             }
             output[row * columns + column] = sum;
         }
@@ -38,16 +38,17 @@ Tensor ReferenceCpuBackend::MatMul(
 }
 
 // 使用直接标量循环计算最后一维的 RMSNorm。
-Tensor ReferenceCpuBackend::RmsNorm(
-    const Tensor& input,
-    const Tensor& weight,
-    float epsilon) const {
+Tensor ReferenceCpuBackend::RmsNorm(const Tensor& input,
+                                    const Tensor& weight,
+                                    float epsilon) const
+{
     if (input.Rank() == 0 || weight.Rank() != 1) {
         throw std::invalid_argument(
             "RmsNorm expects a non-scalar input and rank-1 weight");
     }
     if (epsilon <= 0.0F) {
-        throw std::invalid_argument("RmsNorm epsilon must be greater than zero");
+        throw std::invalid_argument(
+            "RmsNorm epsilon must be greater than zero");
     }
 
     const std::size_t width = input.Shape().back();
@@ -65,8 +66,8 @@ Tensor ReferenceCpuBackend::RmsNorm(
             square_sum += static_cast<double>(value) * value;
         }
 
-        const float inverse_rms = 1.0F / std::sqrt(
-            static_cast<float>(square_sum / width) + epsilon);
+        const float inverse_rms =
+            1.0F / std::sqrt(static_cast<float>(square_sum / width) + epsilon);
         for (std::size_t column = 0; column < width; ++column) {
             const std::size_t index = row * width + column;
             output[index] = input[index] * inverse_rms * weight[column];

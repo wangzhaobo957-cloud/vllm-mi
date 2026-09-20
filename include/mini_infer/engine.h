@@ -21,15 +21,13 @@ struct GenerationResult {
 class InferenceEngine {
 public:
     // 绑定推理所需组件并按模型配置创建 KV 缓存。
-    InferenceEngine(
-        const Tokenizer& tokenizer,
-        const DecoderModel& model,
-        const Sampler& sampler);
+    InferenceEngine(const Tokenizer& tokenizer,
+                    const DecoderModel& model,
+                    const Sampler& sampler);
 
     // 对输入执行 prefill 和逐 token decode，并返回新增内容。
-    [[nodiscard]] GenerationResult Generate(
-        std::string_view prompt,
-        std::size_t max_new_tokens);
+    [[nodiscard]] GenerationResult Generate(std::string_view prompt,
+                                            std::size_t max_new_tokens);
 
 private:
     const Tokenizer& tokenizer_;

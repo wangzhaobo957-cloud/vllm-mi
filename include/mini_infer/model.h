@@ -18,10 +18,9 @@ public:
     [[nodiscard]] virtual const ModelConfig& Config() const noexcept = 0;
 
     // 输入一个 token 并返回预测下一个 token 的一维 logits。
-    [[nodiscard]] virtual Tensor Forward(
-        int token_id,
-        std::size_t position,
-        KVCache& cache) const = 0;
+    [[nodiscard]] virtual Tensor Forward(int token_id,
+                                         std::size_t position,
+                                         KVCache& cache) const = 0;
 };
 
 }  // namespace mini_infer

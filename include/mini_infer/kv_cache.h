@@ -18,21 +18,18 @@ public:
     void Clear() noexcept;
 
     // 写入指定层和 token 位置对应的 Key 与 Value。
-    void Set(
-        std::size_t layer,
-        std::size_t position,
-        std::span<const float> key,
-        std::span<const float> value);
+    void Set(std::size_t layer,
+             std::size_t position,
+             std::span<const float> key,
+             std::span<const float> value);
 
     // 返回指定层和 token 位置的只读 Key 视图。
-    [[nodiscard]] std::span<const float> Key(
-        std::size_t layer,
-        std::size_t position) const;
+    [[nodiscard]] std::span<const float> Key(std::size_t layer,
+                                             std::size_t position) const;
 
     // 返回指定层和 token 位置的只读 Value 视图。
-    [[nodiscard]] std::span<const float> Value(
-        std::size_t layer,
-        std::size_t position) const;
+    [[nodiscard]] std::span<const float> Value(std::size_t layer,
+                                               std::size_t position) const;
 
     // 返回当前已经写入过的最大序列长度。
     [[nodiscard]] std::size_t Length() const noexcept;
@@ -42,9 +39,8 @@ public:
 
 private:
     // 检查层号和位置并返回对应连续内存的起始下标。
-    [[nodiscard]] std::size_t Offset(
-        std::size_t layer,
-        std::size_t position) const;
+    [[nodiscard]] std::size_t Offset(std::size_t layer,
+                                     std::size_t position) const;
 
     std::size_t num_layers_;
     std::size_t max_sequence_length_;

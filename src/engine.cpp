@@ -8,7 +8,8 @@ namespace mini_infer {
 namespace {
 
 // 检查模型输出是否是一份与词表大小匹配的一维 logits。
-void ValidateLogits(const Tensor& logits, std::size_t vocab_size) {
+void ValidateLogits(const Tensor& logits, std::size_t vocab_size)
+{
     if (logits.Rank() != 1 || logits.Size() != vocab_size) {
         throw std::runtime_error(
             "model must return rank-1 logits matching vocab_size");
@@ -16,7 +17,8 @@ void ValidateLogits(const Tensor& logits, std::size_t vocab_size) {
 }
 
 // 检查 token ID 是否位于模型词表范围内。
-void ValidateToken(int token_id, std::size_t vocab_size) {
+void ValidateToken(int token_id, std::size_t vocab_size)
+{
     if (token_id < 0 || static_cast<std::size_t>(token_id) >= vocab_size) {
         throw std::runtime_error("token ID is outside the model vocabulary");
     }
@@ -25,19 +27,18 @@ void ValidateToken(int token_id, std::size_t vocab_size) {
 }  // namespace
 
 // 绑定推理所需组件并按模型配置创建 KV 缓存。
-InferenceEngine::InferenceEngine(
-    const Tokenizer& tokenizer,
-    const DecoderModel& model,
-    const Sampler& sampler)
-    : tokenizer_(tokenizer),
-      model_(model),
-      sampler_(sampler),
-      cache_(model.Config()) {}
+InferenceEngine::InferenceEngine(const Tokenizer& tokenizer,
+                                 const DecoderModel& model,
+                                 const Sampler& sampler)
+    : tokenizer_(tokenizer), model_(model), sampler_(sampler),
+      cache_(model.Config())
+{
+}
 
 // 对输入执行 prefill 和逐 token decode，并返回新增内容。
-GenerationResult InferenceEngine::Generate(
-    std::string_view prompt,
-    std::size_t max_new_tokens) {
+GenerationResult InferenceEngine::Generate(std::string_view prompt,
+                                           std::size_t max_new_tokens)
+{
     GenerationResult result;
     if (max_new_tokens == 0) {
         return result;
@@ -49,8 +50,7 @@ GenerationResult InferenceEngine::Generate(
         throw std::invalid_argument("prompt must produce at least one token");
     }
     if (prompt_tokens.size() > config.max_sequence_length ||
-        max_new_tokens >
-            config.max_sequence_length - prompt_tokens.size()) {
+        max_new_tokens > config.max_sequence_length - prompt_tokens.size()) {
         throw std::length_error(
             "prompt and generated tokens exceed max_sequence_length");
     }
@@ -62,7 +62,8 @@ GenerationResult InferenceEngine::Generate(
 
     Tensor logits = model_.Forward(prompt_tokens[0], 0, cache_);
     ValidateLogits(logits, config.vocab_size);
-    for (std::size_t position = 1; position < prompt_tokens.size(); ++position) {
+    for (std::size_t position = 1; position < prompt_tokens.size();
+         ++position) {
         logits = model_.Forward(prompt_tokens[position], position, cache_);
         ValidateLogits(logits, config.vocab_size);
     }

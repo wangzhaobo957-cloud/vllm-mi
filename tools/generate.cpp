@@ -16,8 +16,8 @@ namespace {
 class ByteTokenizer final : public mini_infer::Tokenizer {
 public:
     // 将每个输入字节直接映射为一个 token ID。
-    [[nodiscard]] std::vector<int> Encode(
-        std::string_view text) const override {
+    [[nodiscard]] std::vector<int> Encode(std::string_view text) const override
+    {
         std::vector<int> tokens;
         tokens.reserve(text.size());
         for (const char character : text) {
@@ -27,7 +27,8 @@ public:
     }
 
     // 将字节范围内的 token ID 还原为单字符字符串。
-    [[nodiscard]] std::string DecodeToken(int token_id) const override {
+    [[nodiscard]] std::string DecodeToken(int token_id) const override
+    {
         if (token_id < 0 || token_id > 255) {
             throw std::out_of_range("byte token is outside [0, 255]");
         }
@@ -38,11 +39,14 @@ public:
 class ToyModel final : public mini_infer::DecoderModel {
 public:
     // 创建仅用于验证自回归流程的确定性玩具模型。
-    ToyModel() : config_(CreateConfig()) {}
+    ToyModel() : config_(CreateConfig())
+    {
+    }
 
     // 返回玩具模型的固定结构配置。
     [[nodiscard]] const mini_infer::ModelConfig& Config()
-        const noexcept override {
+        const noexcept override
+    {
         return config_;
     }
 
@@ -50,7 +54,8 @@ public:
     [[nodiscard]] mini_infer::Tensor Forward(
         int token_id,
         std::size_t position,
-        mini_infer::KVCache& cache) const override {
+        mini_infer::KVCache& cache) const override
+    {
         const std::array<float, 1> key = {
             static_cast<float>(token_id),
         };
@@ -73,7 +78,8 @@ public:
 
 private:
     // 构造满足接口约束的最小模型配置。
-    [[nodiscard]] static mini_infer::ModelConfig CreateConfig() {
+    [[nodiscard]] static mini_infer::ModelConfig CreateConfig()
+    {
         mini_infer::ModelConfig config;
         config.vocab_size = 256;
         config.hidden_size = 1;
@@ -90,7 +96,8 @@ private:
 };
 
 // 将命令行中的生成长度解析为非负整数。
-[[nodiscard]] std::size_t ParseCount(std::string_view text) {
+[[nodiscard]] std::size_t ParseCount(std::string_view text)
+{
     std::size_t value = 0;
     const char* begin = text.data();
     const char* end = begin + text.size();
@@ -104,16 +111,18 @@ private:
 }  // namespace
 
 // 解析参数并运行玩具模型的自回归生成流程。
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     try {
         const std::string_view prompt = argc > 1 ? argv[1] : "a";
-        const std::size_t max_new_tokens =
-            argc > 2 ? ParseCount(argv[2]) : 8;
+        const std::size_t max_new_tokens = argc > 2 ? ParseCount(argv[2]) : 8;
 
         ByteTokenizer tokenizer;
         ToyModel model;
-        mini_infer::GreedySampler sampler;
-        mini_infer::InferenceEngine engine(tokenizer, model, sampler);
+        mini_infer::GreedySampler sampler;  // 采样器
+        mini_infer::InferenceEngine engine(tokenizer,
+                                           model,
+                                           sampler);  // 推理引擎
 
         const mini_infer::GenerationResult result =
             engine.Generate(prompt, max_new_tokens);

@@ -1,0 +1,52 @@
+# 本文件定义 mini-infer 项目的统一 C++ 代码风格：
+# 函数定义的左花括号另起一行，类、命名空间和控制语句的左花括号保持在同一行。
+Language: Cpp
+BasedOnStyle: LLVM
+
+# 缩进与宽度
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 80
+AccessModifierOffset: -4
+NamespaceIndentation: None
+
+# 花括号换行规则：仅函数定义换行，其余保持贴合
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: false
+  AfterStruct: false
+  AfterEnum: false
+  AfterUnion: false
+  AfterNamespace: false
+  AfterFunction: true
+  AfterControlStatement: Never
+  BeforeElse: false
+  BeforeCatch: false
+  BeforeWhile: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: false
+
+# 空函数体也保持花括号各占一行
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# 指针左靠类型：const char* begin
+PointerAlignment: Left
+DerivePointerAlignment: false
+
+# 函数参数换行时每个参数独占一行，且不把返回类型单独提到一行
+BinPackParameters: false
+BinPackArguments: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
+AlwaysBreakAfterReturnType: None
+PenaltyReturnTypeOnItsOwnLine: 1000
+
+# 保留系统头与项目头之间的分组，仅在组内排序
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+SpacesBeforeTrailingComments: 2

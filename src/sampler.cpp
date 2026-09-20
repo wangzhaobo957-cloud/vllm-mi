@@ -8,7 +8,8 @@
 namespace mini_infer {
 
 // 返回 logits 中数值最大位置对应的 token ID。
-int GreedySampler::Sample(const Tensor& logits) const {
+int GreedySampler::Sample(const Tensor& logits) const
+{
     if (logits.Rank() != 1) {
         throw std::invalid_argument("GreedySampler expects rank-1 logits");
     }
